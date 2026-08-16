@@ -1,0 +1,20 @@
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.vite/
+.cache/
+*.log
+*.local
+.DS_Store
+.env
+.env.*
+!.env.example
+backend/target/
+
+# Playwright verifier artifacts
+test-results/
+**/test-results/
+playwright-report/
+**/playwright-report/

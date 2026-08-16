@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: common-foundation
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://database:5432/common_foundation}
+    username: ${SPRING_DATASOURCE_USERNAME:common_app}
+    password: ${SPRING_DATASOURCE_PASSWORD:common_app_password}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+mybatis:
+  mapper-locations: classpath:/mappers/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+server:
+  port: 8080

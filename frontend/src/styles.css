@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --border: #000000;
+  --shadow-color: #000000;
+}
+
+@layer base {
+  html {
+    background: #fff7e8;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.08) 1px, transparent 0)
+        0 0 / 22px 22px,
+      #fff7e8;
+    color: #000000;
+    font-family: Inter, system-ui, sans-serif;
+  }
+
+  ::selection {
+    background: #ffdc58;
+    color: #000000;
+  }
+
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input,
+  select,
+  textarea {
+    transition:
+      box-shadow 200ms ease-out,
+      transform 200ms ease-out,
+      border-color 200ms ease-out,
+      background-color 200ms ease-out;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #ffdc58;
+    outline-offset: 2px;
+    box-shadow: 3px 3px 0 0 #000000;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+@layer components {
+  .shadow-hard {
+    box-shadow: 4px 4px 0 0 #000000;
+  }
+
+  .shadow-hard-lg {
+    box-shadow: 7px 7px 0 0 #000000;
+  }
+
+  main > section {
+    position: relative;
+  }
+
+  main > section::before {
+    content: "";
+    position: absolute;
+    inset: -0.75rem auto auto -0.75rem;
+    width: 5rem;
+    height: 5rem;
+    border: 2px solid #000000;
+    background: #01ffcc;
+    z-index: -1;
+  }
+
+  main > section::after {
+    content: "";
+    position: absolute;
+    right: -0.5rem;
+    bottom: -0.5rem;
+    width: 6rem;
+    height: 6rem;
+    border: 2px solid #000000;
+    background: #ff30cd;
+    z-index: -1;
+  }
+
+  table tbody tr {
+    transition:
+      background-color 160ms ease-out,
+      transform 160ms ease-out;
+  }
+
+  table tbody tr:hover {
+    transform: translate(-1px, -1px);
+  }
+
+  table th {
+    letter-spacing: 0.08em;
+  }
+
+  @keyframes neo-pulse {
+    0%,
+    100% {
+      transform: translate(0, 0);
+      box-shadow: 4px 4px 0 0 #000000;
+    }
+    50% {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 0 #000000;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    table tbody tr:hover {
+      transform: none;
+    }
+  }
+}

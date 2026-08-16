@@ -1,0 +1,9 @@
+package kr.ac.knue.commonfoundation.api;
+
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record ApiError(String code, String message, Map<String, String> fields) {
+}
