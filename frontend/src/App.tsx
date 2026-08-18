@@ -744,6 +744,76 @@ function AppShell({ children }: { children: ReactNode }) {
     (item) => item.href === currentPath,
   );
   const currentMenuPath = ROUTE_MENU_PATHS[currentPath];
+  const currentGroup = NAV_GROUPS.find((group) =>
+    group.items.some((item) => item.href === currentPath),
+  );
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(() => {
+    if (currentGroup) {
+      return currentGroup.label;
+    }
+    const storedGroup = window.localStorage.getItem(
+      "selected-navigation-group",
+    );
+    return NAV_GROUPS.some((group) => group.label === storedGroup)
+      ? storedGroup
+      : null;
+  });
+  const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
+  const [manuallyOpenGroups, setManuallyOpenGroups] = useState<Set<string>>(
+    new Set(),
+  );
+  const [manuallyClosedGroups, setManuallyClosedGroups] = useState<Set<string>>(
+    new Set(),
+  );
+
+  function isGroupOpen(groupLabel: string) {
+    return (
+      !manuallyClosedGroups.has(groupLabel) &&
+      (selectedGroup === groupLabel ||
+        hoveredGroup === groupLabel ||
+        manuallyOpenGroups.has(groupLabel))
+    );
+  }
+
+  function toggleGroup(groupLabel: string) {
+    const openedBySelectionOrArrow =
+      !manuallyClosedGroups.has(groupLabel) &&
+      (selectedGroup === groupLabel || manuallyOpenGroups.has(groupLabel));
+    if (openedBySelectionOrArrow) {
+      setManuallyClosedGroups((groups) => new Set(groups).add(groupLabel));
+      setManuallyOpenGroups((groups) => {
+        const nextGroups = new Set(groups);
+        nextGroups.delete(groupLabel);
+        return nextGroups;
+      });
+      return;
+    }
+    setManuallyClosedGroups((groups) => {
+      const nextGroups = new Set(groups);
+      nextGroups.delete(groupLabel);
+      return nextGroups;
+    });
+    setManuallyOpenGroups((groups) => new Set(groups).add(groupLabel));
+  }
+
+  function closeGroup(groupLabel: string) {
+    setManuallyClosedGroups((groups) => new Set(groups).add(groupLabel));
+    setManuallyOpenGroups((groups) => {
+      const nextGroups = new Set(groups);
+      nextGroups.delete(groupLabel);
+      return nextGroups;
+    });
+  }
+
+  function selectGroup(groupLabel: string) {
+    window.localStorage.setItem("selected-navigation-group", groupLabel);
+    setSelectedGroup(groupLabel);
+    setManuallyClosedGroups((groups) => {
+      const nextGroups = new Set(groups);
+      nextGroups.delete(groupLabel);
+      return nextGroups;
+    });
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-foreground">
@@ -756,89 +826,114 @@ function AppShell({ children }: { children: ReactNode }) {
       <div className="border-b-2 border-black bg-primary px-4 py-2.5 text-center font-head text-xs font-black uppercase tracking-[0.16em] sm:text-sm">
         KNUE Common Foundation · API-backed R09 Admin Surface
       </div>
-      <header className="sticky top-0 z-40 border-b-2 border-black bg-background/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <a
-              className="group/brand inline-flex w-fit items-center gap-2.5 font-head text-xl font-black uppercase tracking-tight outline-none transition-all duration-200 hover:-translate-x-px hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              href="/admin/system/users"
-            >
-              <span className="grid h-9 w-9 place-items-center border-2 border-black bg-primary shadow-hard transition-all duration-200 group-hover/brand:shadow-hard-lg">
-                KN
-              </span>
-              <span>
-                KNUE Common
-                <span className="block font-body text-xs font-bold normal-case tracking-normal text-muted-foreground">
-                  {currentItem?.label ?? "공통기능 관리 콘솔"}
-                </span>
-              </span>
-            </a>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded border-2 border-black bg-accent px-3 py-1 font-head text-xs font-black uppercase tracking-[0.14em] shadow-hard">
-                R09
-              </span>
+      <div className="lg:flex lg:items-start">
+        <aside
+          className="z-40 border-b-2 border-black bg-background/95 backdrop-blur-sm lg:sticky lg:top-0 lg:h-screen lg:w-[22%] lg:min-w-[16rem] lg:max-w-[23rem] lg:overflow-y-auto lg:border-b-0 lg:border-r-2"
+          data-testid="sidebar-navigation"
+        >
+          <div className="flex flex-col gap-3 px-4 py-3 sm:px-6 lg:px-4 lg:py-5">
+            <div className="flex flex-col gap-3">
               <a
-                className="rounded border-2 border-black bg-card px-3 py-1 font-head text-xs font-black shadow-hard transition-all duration-200 hover:-translate-x-px hover:-translate-y-px hover:bg-accent hover:shadow-hard-lg active:translate-x-px active:translate-y-px active:shadow-none"
-                href="/api/health"
+                className="group/brand inline-flex w-fit items-center gap-2.5 font-head text-xl font-black uppercase tracking-tight outline-none transition-all duration-200 hover:-translate-x-px hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                href="/admin/system/users"
               >
-                Health
+                <span className="grid h-9 w-9 place-items-center border-2 border-black bg-primary shadow-hard transition-all duration-200 group-hover/brand:shadow-hard-lg">
+                  KN
+                </span>
+                <span>
+                  KNUE Common
+                  <span className="block font-body text-xs font-bold normal-case tracking-normal text-muted-foreground">
+                    {currentItem?.label ?? "공통기능 관리 콘솔"}
+                  </span>
+                </span>
               </a>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded border-2 border-black bg-accent px-3 py-1 font-head text-xs font-black uppercase tracking-[0.14em] shadow-hard">
+                  R09
+                </span>
+                <a
+                  className="rounded border-2 border-black bg-card px-3 py-1 font-head text-xs font-black shadow-hard transition-all duration-200 hover:-translate-x-px hover:-translate-y-px hover:bg-accent hover:shadow-hard-lg active:translate-x-px active:translate-y-px active:shadow-none"
+                  href="/api/health"
+                >
+                  Health
+                </a>
+              </div>
             </div>
-          </div>
-          <nav
-            aria-label="주요 관리 화면"
-            className="grid gap-2 lg:grid-cols-3 xl:grid-cols-6"
-          >
-            {NAV_GROUPS.map((group) => (
-              <details
-                key={group.label}
-                className="group rounded-none border-2 border-black bg-card shadow-hard transition-all duration-200 open:bg-muted"
-                open={group.items.some((item) => item.href === currentPath)}
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-2 border-b-2 border-black px-3 py-2 font-head text-xs font-black uppercase tracking-[0.12em] marker:hidden [&::-webkit-details-marker]:hidden">
-                  <span
-                    className={`border-2 border-black px-2 py-0.5 ${group.accent}`}
+            <nav aria-label="주요 관리 화면" className="grid gap-2">
+              {NAV_GROUPS.map((group) => {
+                const expanded = isGroupOpen(group.label);
+                return (
+                  <section
+                    key={group.label}
+                    className="border-2 border-black bg-card shadow-hard transition-colors duration-200"
+                    data-testid={`sidebar-menu-${group.label}`}
+                    onMouseEnter={() => setHoveredGroup(group.label)}
+                    onMouseLeave={() => setHoveredGroup(null)}
                   >
-                    {group.label}
-                  </span>
-                  <span className="transition-transform duration-200 group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <div className="flex flex-wrap gap-2 p-2">
-                  {group.items.map((item) => {
-                    const active = item.href === currentPath;
-                    return (
-                      <a
-                        key={item.href}
-                        className={`rounded border-2 border-black px-3 py-1.5 font-head text-xs font-black shadow-hard transition-all duration-200 hover:-translate-x-px hover:-translate-y-px hover:shadow-hard-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:translate-x-px active:translate-y-px active:shadow-none ${active ? "bg-primary" : "bg-card hover:bg-accent"}`}
-                        aria-current={active ? "page" : undefined}
-                        href={item.href}
+                    <div className="flex items-center gap-2 border-b-2 border-black px-2 py-2">
+                      <span
+                        className={`border-2 border-black px-2 py-0.5 font-head text-xs font-black uppercase tracking-[0.12em] ${group.accent}`}
                       >
-                        {item.label}
-                      </a>
-                    );
-                  })}
-                </div>
-              </details>
-            ))}
-          </nav>
-        </div>
-      </header>
-      <main
-        id="main"
-        className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:py-12"
-      >
-        {currentMenuPath ? (
-          <nav
-            aria-label="현재 메뉴 경로"
-            className="w-fit border-2 border-black bg-card px-3 py-2 font-head text-xs font-black text-muted-foreground shadow-hard sm:text-sm"
-          >
-            {currentMenuPath}
-          </nav>
-        ) : null}
-        {children}
-      </main>
+                        {group.label}
+                      </span>
+                      <button
+                        aria-expanded={expanded}
+                        aria-label={`${group.label} 메뉴 ${expanded ? "접기" : "펼치기"}`}
+                        className="ml-auto grid h-7 w-7 place-items-center border-2 border-black bg-card font-head text-base font-black transition-colors hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                        type="button"
+                        onClick={() => toggleGroup(group.label)}
+                      >
+                        <span className={expanded ? "rotate-45" : ""}>+</span>
+                      </button>
+                      <button
+                        aria-label={`${group.label} 메뉴 닫기`}
+                        className="grid h-7 w-7 place-items-center border-2 border-black bg-card font-head text-sm font-black transition-colors hover:bg-destructive hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                        type="button"
+                        onClick={() => closeGroup(group.label)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                    {expanded ? (
+                      <div className="flex flex-col gap-1 p-2">
+                        {group.items.map((item) => {
+                          const active = item.href === currentPath;
+                          return (
+                            <a
+                              key={item.href}
+                              className={`border-2 border-black px-3 py-2 font-head text-xs font-black shadow-hard transition-all duration-200 hover:-translate-x-px hover:-translate-y-px hover:shadow-hard-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:translate-x-px active:translate-y-px active:shadow-none ${active ? "bg-primary" : "bg-card hover:bg-accent"}`}
+                              aria-current={active ? "page" : undefined}
+                              href={item.href}
+                              onMouseDown={() => selectGroup(group.label)}
+                              onClick={() => selectGroup(group.label)}
+                            >
+                              {item.label}
+                            </a>
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                  </section>
+                );
+              })}
+            </nav>
+          </div>
+        </aside>
+        <main
+          id="main"
+          className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 lg:px-10 lg:py-12"
+        >
+          {currentMenuPath ? (
+            <nav
+              aria-label="현재 메뉴 경로"
+              className="w-fit border-2 border-black bg-card px-3 py-2 font-head text-xs font-black text-muted-foreground shadow-hard sm:text-sm"
+            >
+              {currentMenuPath}
+            </nav>
+          ) : null}
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

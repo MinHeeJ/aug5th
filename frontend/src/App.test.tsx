@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
 
@@ -694,6 +694,7 @@ function jsonResponse(body: unknown, status = 200) {
 
 beforeEach(() => {
   window.history.pushState({}, "", "/");
+  window.localStorage.clear();
 });
 
 afterEach(() => {
@@ -715,6 +716,45 @@ test("renders setup shell and loads health through relative api path", async () 
     "/api/health",
     expect.objectContaining({ credentials: "include" }),
   );
+});
+
+test("sidebar menu expands a hovered tree and keeps the last selected menu tree open", async () => {
+  const user = userEvent.setup();
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(() => jsonResponse(healthResponse)),
+  );
+
+  const { unmount } = render(<App />);
+  await screen.findByText("STATUS UP");
+
+  const sidebar = screen.getByTestId("sidebar-navigation");
+  expect(sidebar).toBeInTheDocument();
+  expect(sidebar).toHaveClass("lg:w-[22%]");
+
+  const roleMenuToggle = screen.getByRole("button", {
+    name: "역할·권한 메뉴 펼치기",
+  });
+  expect(
+    screen.queryByRole("link", { name: "역할 관리" }),
+  ).not.toBeInTheDocument();
+
+  await user.hover(roleMenuToggle);
+  expect(screen.getByRole("link", { name: "역할 관리" })).toBeVisible();
+
+  await user.unhover(roleMenuToggle);
+  expect(
+    screen.queryByRole("link", { name: "역할 관리" }),
+  ).not.toBeInTheDocument();
+
+  await user.click(roleMenuToggle);
+  fireEvent.mouseDown(screen.getByRole("link", { name: "역할 관리" }));
+  expect(screen.getByRole("link", { name: "역할 관리" })).toBeVisible();
+
+  unmount();
+  render(<App />);
+  await screen.findByText("STATUS UP");
+  expect(screen.getByRole("link", { name: "역할 관리" })).toBeVisible();
 });
 
 test("smoke: opens user route, loads users, runs primary save action from selected row", async () => {
