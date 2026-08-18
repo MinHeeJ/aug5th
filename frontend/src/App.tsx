@@ -823,26 +823,48 @@ function AppShell({ children }: { children: ReactNode }) {
       >
         본문으로 이동
       </a>
-      <div className="border-b-2 border-black bg-primary px-4 py-2.5 text-center font-head text-xs font-black uppercase tracking-[0.16em] sm:text-sm">
-        KNUE Common Foundation · API-backed R09 Admin Surface
-      </div>
+      <header className="border-b-4 border-black bg-card px-4 py-3 shadow-[0_5px_0_0_var(--border)] sm:px-6">
+        <div className="mx-auto flex max-w-[96rem] flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-3">
+            <span className="grid h-11 w-11 rotate-[-3deg] place-items-center border-4 border-black bg-primary font-head text-base font-black shadow-hard">
+              KN
+            </span>
+            <div>
+              <p className="font-head text-xs font-black uppercase tracking-[0.18em] text-muted-foreground">
+                Brutadmin Surface
+              </p>
+              <p className="font-head text-xl font-black uppercase leading-none">
+                KNUE Common Foundation
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 font-head text-xs font-black uppercase tracking-[0.12em]">
+            <span className="border-2 border-black bg-primary px-3 py-1.5 shadow-hard">
+              API-backed R09
+            </span>
+            <span className="border-2 border-black bg-[#01ffcc] px-3 py-1.5 shadow-hard">
+              {currentItem?.label ?? "Admin Console"}
+            </span>
+          </div>
+        </div>
+      </header>
       <div className="lg:flex lg:items-start">
         <aside
-          className="z-40 border-b-2 border-black bg-background/95 backdrop-blur-sm lg:sticky lg:top-0 lg:h-screen lg:w-[22%] lg:min-w-[16rem] lg:max-w-[23rem] lg:overflow-y-auto lg:border-b-0 lg:border-r-2"
+          className="z-40 border-b-4 border-black bg-black text-white lg:sticky lg:top-0 lg:h-screen lg:w-[22%] lg:min-w-[16rem] lg:max-w-[23rem] lg:overflow-y-auto lg:border-b-0 lg:border-r-4"
           data-testid="sidebar-navigation"
         >
-          <div className="flex flex-col gap-3 px-4 py-3 sm:px-6 lg:px-4 lg:py-5">
-            <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:px-4 lg:py-5">
+            <div className="flex flex-col gap-3 border-4 border-black bg-primary p-3 text-black shadow-[6px_6px_0_0_#ff30cd]">
               <a
                 className="group/brand inline-flex w-fit items-center gap-2.5 font-head text-xl font-black uppercase tracking-tight outline-none transition-all duration-200 hover:-translate-x-px hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 href="/admin/system/users"
               >
-                <span className="grid h-9 w-9 place-items-center border-2 border-black bg-primary shadow-hard transition-all duration-200 group-hover/brand:shadow-hard-lg">
+                <span className="grid h-9 w-9 place-items-center border-2 border-black bg-card shadow-hard transition-all duration-200 group-hover/brand:shadow-hard-lg">
                   KN
                 </span>
                 <span>
-                  KNUE Common
-                  <span className="block font-body text-xs font-bold normal-case tracking-normal text-muted-foreground">
+                  System Admin
+                  <span className="block font-body text-xs font-bold normal-case tracking-normal">
                     {currentItem?.label ?? "공통기능 관리 콘솔"}
                   </span>
                 </span>
@@ -859,7 +881,7 @@ function AppShell({ children }: { children: ReactNode }) {
                 </a>
               </div>
             </div>
-            <nav aria-label="주요 관리 화면" className="grid gap-2">
+            <nav aria-label="주요 관리 화면" className="grid gap-3">
               {NAV_GROUPS.map((group) => {
                 const expanded = isGroupOpen(group.label);
                 return (
@@ -968,76 +990,144 @@ function LoginPanel({
   }
 
   return (
-    <section className="relative mx-auto w-full max-w-[26rem]">
-      <div className="absolute inset-2 border-2 border-black bg-primary" />
-      <form
-        onSubmit={submit}
-        className="relative border-2 border-black bg-card shadow-[6px_6px_0_0_var(--border)] sm:shadow-[8px_8px_0_0_var(--border)]"
-      >
-        <div className="flex items-center justify-between gap-3 border-b-2 border-black bg-muted px-5 py-3.5 sm:px-7">
-          <span className="font-head text-sm font-black uppercase">
-            Dashboard Login
-          </span>
-          <span className="border-2 border-black bg-primary px-2 py-1 font-head text-xs font-black">
-            R09
-          </span>
+    <form
+      onSubmit={submit}
+      className="relative z-10 border-4 border-black bg-card shadow-[10px_10px_0_0_var(--border)]"
+    >
+      <div className="flex items-center justify-between gap-3 border-b-4 border-black bg-accent px-5 py-3.5 sm:px-7">
+        <span className="font-head text-sm font-black uppercase tracking-[0.16em]">
+          Admin Sign In
+        </span>
+        <span className="rotate-2 border-2 border-black bg-primary px-2 py-1 font-head text-xs font-black shadow-hard">
+          R09
+        </span>
+      </div>
+      <div className="space-y-5 px-5 py-7 sm:px-7 sm:py-8">
+        <div>
+          <h1 className="font-head text-4xl font-black uppercase leading-none tracking-tight sm:text-5xl">
+            관리자 로그인
+          </h1>
+          <p className="mt-3 text-sm font-bold leading-relaxed text-muted-foreground">
+            아이디와 비밀번호로 공통기능 관리 콘솔에 접속합니다.
+          </p>
         </div>
-        <div className="space-y-4 px-5 py-7 sm:px-7 sm:py-8">
-          <div>
-            <h1 className="font-head text-3xl font-black uppercase leading-none tracking-tight sm:text-[2.15rem]">
-              관리자 로그인
-            </h1>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              시드 관리자 계정으로 로그인하면 시스템 관리 화면과 API를 함께
-              확인합니다.
-            </p>
-          </div>
-          <label className="block">
-            <span className="mb-2 block font-head text-sm font-bold">
-              아이디
-            </span>
-            <input
-              className="h-12 w-full rounded border-2 border-black bg-white px-4 py-2 shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              value={userId}
-              onChange={(event) => setUserId(event.target.value)}
-            />
-          </label>
-          <label className="block">
-            <span className="mb-2 block font-head text-sm font-bold">
-              비밀번호
-            </span>
-            <input
-              className="h-12 w-full rounded border-2 border-black bg-white px-4 py-2 shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </label>
-          {error ? (
-            <p
-              role="alert"
-              className="border-2 border-black bg-destructive px-3 py-2 text-sm font-bold text-white"
-            >
-              {error}
-            </p>
-          ) : null}
-          <button
-            className="h-12 w-full rounded border-2 border-black bg-primary px-4 py-1.5 font-head text-base font-black shadow-[4px_4px_0_0_var(--shadow-color)] transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-[6px_6px_0_0_var(--shadow-color)] active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-60"
-            type="submit"
-            disabled={submitting}
+        <label className="block">
+          <span className="mb-2 block font-head text-sm font-black">
+            아이디
+          </span>
+          <input
+            aria-label="아이디"
+            data-testid="login-user-id-input"
+            className="h-12 w-full border-[3px] border-black bg-white px-4 py-3 font-head text-base font-bold shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            value={userId}
+            onChange={(event) => setUserId(event.target.value)}
+          />
+        </label>
+        <label className="block">
+          <span className="mb-2 block font-head text-sm font-black">
+            비밀번호
+          </span>
+          <input
+            aria-label="비밀번호"
+            data-testid="login-password-input"
+            className="h-12 w-full border-[3px] border-black bg-white px-4 py-3 font-head text-base font-bold shadow-hard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
+        </label>
+        {error ? (
+          <p
+            role="alert"
+            className="border-2 border-black bg-destructive px-3 py-2 text-sm font-bold text-white shadow-hard"
           >
-            {submitting ? "로그인 중..." : "admin 로그인"}
-          </button>
+            {error}
+          </p>
+        ) : null}
+        <button
+          aria-label="로그인"
+          data-testid="login-submit-button"
+          className="h-12 w-full border-4 border-black bg-black px-4 py-3 font-head text-base font-black text-primary shadow-[5px_5px_0_0_#ff30cd] transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-primary hover:text-black hover:shadow-[8px_8px_0_0_#ff30cd] active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-60"
+          type="submit"
+          disabled={submitting}
+        >
+          {submitting ? "로그인 중..." : "로그인"}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function LoginPage({
+  onLogin,
+}: {
+  onLogin: (user: AuthenticatedUser) => void;
+}) {
+  return (
+    <main
+      className="login-page min-h-screen overflow-hidden bg-primary px-4 py-8 text-foreground sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_28rem] lg:items-center lg:gap-10 lg:px-12"
+      data-testid="login-page"
+    >
+      <section className="relative mx-auto flex max-w-5xl flex-col gap-8 lg:mx-0">
+        <div className="absolute -left-8 top-5 h-24 w-24 rotate-12 border-4 border-black bg-[#ff30cd] shadow-hard" />
+        <div className="relative border-4 border-black bg-card p-5 shadow-[12px_12px_0_0_var(--border)] sm:p-8">
+          <span className="inline-flex rotate-[-2deg] border-2 border-black bg-accent px-3 py-1 font-head text-xs font-black uppercase tracking-[0.18em] shadow-hard">
+            KNUE Common Foundation
+          </span>
+          <h1 className="mt-6 font-head text-5xl font-black uppercase leading-[0.9] tracking-tight sm:text-7xl">
+            Sign in to
+            <span className="block text-[#ff30cd] [-webkit-text-stroke:2px_#000]">
+              Brutal Admin
+            </span>
+          </h1>
+          <p className="mt-5 max-w-2xl text-base font-bold leading-relaxed sm:text-lg">
+            로그인 전용 화면입니다. 공통 사이드바 없이 노란 메인 컬러와 강한
+            테두리, 그림자, 장식 그래픽으로 관리 콘솔 진입점을 분리했습니다.
+          </p>
         </div>
-      </form>
-    </section>
+        <div
+          className="grid grid-cols-3 gap-3 sm:max-w-xl"
+          data-testid="login-hero-art"
+          aria-label="로그인 페이지 장식 그래픽"
+        >
+          <div className="h-24 rotate-[-3deg] border-4 border-black bg-[#01ffcc] shadow-hard" />
+          <div className="grid h-24 place-items-center border-4 border-black bg-black font-head text-4xl font-black text-primary shadow-hard">
+            🔐
+          </div>
+          <div className="h-24 rotate-3 border-4 border-black bg-[#c4a1ff] shadow-hard" />
+        </div>
+      </section>
+      <section className="relative mx-auto mt-10 w-full max-w-[28rem] lg:mt-0">
+        <div className="absolute inset-3 border-4 border-black bg-[#ff30cd]" />
+        <LoginPanel onLogin={onLogin} />
+      </section>
+    </main>
   );
 }
 
 export default function App() {
-  const path = window.location.pathname;
+  const [path, setPath] = useState(window.location.pathname);
+  const [authenticatedUser, setAuthenticatedUser] =
+    useState<AuthenticatedUser | null>(null);
+
+  function openDefaultUserManagement(user: AuthenticatedUser) {
+    setAuthenticatedUser(user);
+    window.history.pushState({}, "", "/admin/system/users");
+    setPath("/admin/system/users");
+  }
+
+  if (path === "/") {
+    return (
+      <LoginPage
+        onLogin={(nextUser) => {
+          openDefaultUserManagement(nextUser);
+        }}
+      />
+    );
+  }
+
   if (path === "/admin/system/users") {
-    return <UserManagementPage />;
+    return <UserManagementPage initialAuthenticatedUser={authenticatedUser} />;
   }
   if (path === "/admin/system/organizations") {
     return <OrganizationManagementPage />;
@@ -1200,8 +1290,14 @@ function SetupHome() {
   );
 }
 
-function UserManagementPage() {
-  const [user, setUser] = useState<AuthenticatedUser | null>(null);
+function UserManagementPage({
+  initialAuthenticatedUser = null,
+}: {
+  initialAuthenticatedUser?: AuthenticatedUser | null;
+}) {
+  const [user, setUser] = useState<AuthenticatedUser | null>(
+    initialAuthenticatedUser,
+  );
   const [users, setUsers] = useState<UserListItem[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [query, setQuery] = useState("");
@@ -1218,6 +1314,10 @@ function UserManagementPage() {
   );
 
   useEffect(() => {
+    if (initialAuthenticatedUser) {
+      void loadUsers("", "", size);
+      return;
+    }
     requestJson<AuthenticatedUser>("/api/auth/session")
       .then((sessionUser) => {
         setUser(sessionUser);
@@ -1315,14 +1415,12 @@ function UserManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadUsers();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadUsers();
+        }}
+      />
     );
   }
 
@@ -1707,14 +1805,12 @@ function OrganizationManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadOrganizations();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadOrganizations();
+        }}
+      />
     );
   }
 
@@ -2081,14 +2177,12 @@ function PositionManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadPositions();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadPositions();
+        }}
+      />
     );
   }
 
@@ -2464,14 +2558,12 @@ function RoleManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadRoles();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadRoles();
+        }}
+      />
     );
   }
 
@@ -2872,14 +2964,12 @@ function UserRoleManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadUserRoles();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadUserRoles();
+        }}
+      />
     );
   }
 
@@ -3758,14 +3848,12 @@ function FunctionPermissionManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadFunctionPermissions();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadFunctionPermissions();
+        }}
+      />
     );
   }
 
@@ -4173,14 +4261,12 @@ function MenuManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadMenus();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadMenus();
+        }}
+      />
     );
   }
 
@@ -4562,14 +4648,12 @@ function CodeGroupManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadCodeGroups();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadCodeGroups();
+        }}
+      />
     );
   }
 
@@ -4961,14 +5045,12 @@ function CodeDetailManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadCodeDetails();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadCodeDetails();
+        }}
+      />
     );
   }
 
@@ -5376,14 +5458,12 @@ function SystemConfigurationManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadSystemConfigurations();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadSystemConfigurations();
+        }}
+      />
     );
   }
 
@@ -5760,14 +5840,12 @@ function BaseYearManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadBaseYears();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadBaseYears();
+        }}
+      />
     );
   }
 
@@ -6165,14 +6243,12 @@ function FilePolicyManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadFilePolicies();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadFilePolicies();
+        }}
+      />
     );
   }
 
@@ -6599,14 +6675,12 @@ function DataScopeManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadDataScopes();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadDataScopes();
+        }}
+      />
     );
   }
 
@@ -7033,14 +7107,12 @@ function NoticeManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadNotices();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadNotices();
+        }}
+      />
     );
   }
 
@@ -7462,14 +7534,12 @@ function AttachmentManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadAttachments();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadAttachments();
+        }}
+      />
     );
   }
 
@@ -7928,14 +7998,12 @@ function ExcelTemplateManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadExcelTemplates();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadExcelTemplates();
+        }}
+      />
     );
   }
 
@@ -8353,14 +8421,12 @@ function ExcelUploadManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadExcelUploads();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadExcelUploads();
+        }}
+      />
     );
   }
 
@@ -8749,14 +8815,12 @@ function ExcelDownloadManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadExcelDownloads();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadExcelDownloads();
+        }}
+      />
     );
   }
 
@@ -9146,14 +9210,12 @@ function PrivacyPolicyManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadPrivacyPolicies();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadPrivacyPolicies();
+        }}
+      />
     );
   }
 
@@ -9580,14 +9642,12 @@ function SessionManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadSessions();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadSessions();
+        }}
+      />
     );
   }
 
@@ -10008,14 +10068,12 @@ function AuditLogManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadAuditLogs();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadAuditLogs();
+        }}
+      />
     );
   }
 
@@ -10460,14 +10518,12 @@ function BatchDefinitionManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadBatchDefinitions();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadBatchDefinitions();
+        }}
+      />
     );
   }
 
@@ -10937,14 +10993,12 @@ function BatchExecutionManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadBatchExecutions();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadBatchExecutions();
+        }}
+      />
     );
   }
 
@@ -11381,14 +11435,12 @@ function BatchResultManagementPage() {
 
   if (!user && state === "error") {
     return (
-      <AppShell>
-        <LoginPanel
-          onLogin={(nextUser) => {
-            setUser(nextUser);
-            void loadBatchResults();
-          }}
-        />
-      </AppShell>
+      <LoginPage
+        onLogin={(nextUser) => {
+          setUser(nextUser);
+          void loadBatchResults();
+        }}
+      />
     );
   }
 

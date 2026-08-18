@@ -706,6 +706,7 @@ test("renders setup shell and loads health through relative api path", async () 
   const fetchMock = vi.fn(() => jsonResponse(healthResponse));
   vi.stubGlobal("fetch", fetchMock);
 
+  window.history.pushState({}, "", "/setup");
   render(<App />);
 
   expect(
@@ -718,6 +719,65 @@ test("renders setup shell and loads health through relative api path", async () 
   );
 });
 
+test("unauthenticated admin route shows standalone yellow neo login without sidebar or oauth options", async () => {
+  window.history.pushState({}, "", "/admin/system/users");
+  const fetchMock = vi.fn(() =>
+    jsonResponse(
+      {
+        success: false,
+        error: { code: "UNAUTHENTICATED", message: "로그인이 필요합니다." },
+      },
+      401,
+    ),
+  );
+  vi.stubGlobal("fetch", fetchMock);
+
+  render(<App />);
+
+  expect(await screen.findByTestId("login-page")).toHaveClass("bg-primary");
+  expect(screen.queryByTestId("sidebar-navigation")).not.toBeInTheDocument();
+  expect(screen.getByTestId("login-hero-art")).toBeInTheDocument();
+  expect(screen.getByLabelText("아이디")).toBeInTheDocument();
+  expect(screen.getByLabelText("비밀번호")).toBeInTheDocument();
+  expect(screen.queryByText(/google|oauth/i)).not.toBeInTheDocument();
+});
+
+test("root login submits credentials and loads user management as the default page", async () => {
+  const user = userEvent.setup();
+  const fetchMock = vi
+    .fn()
+    .mockImplementationOnce(() =>
+      jsonResponse({
+        success: true,
+        data: { userId: "admin", roles: ["R09"], dataScope: "ALL" },
+      }),
+    )
+    .mockImplementationOnce(() => jsonResponse(usersResponse));
+  vi.stubGlobal("fetch", fetchMock);
+
+  render(<App />);
+
+  expect(await screen.findByTestId("login-page")).toBeInTheDocument();
+  await user.clear(screen.getByLabelText("아이디"));
+  await user.type(screen.getByLabelText("아이디"), "admin");
+  await user.clear(screen.getByLabelText("비밀번호"));
+  await user.type(screen.getByLabelText("비밀번호"), "admin");
+  await user.click(screen.getByRole("button", { name: "로그인" }));
+
+  expect(
+    await screen.findByRole("heading", { name: "사용자 관리" }),
+  ).toBeInTheDocument();
+  expect(window.location.pathname).toBe("/admin/system/users");
+  expect(fetchMock).toHaveBeenCalledWith(
+    "/api/auth/login",
+    expect.objectContaining({ method: "POST" }),
+  );
+  expect(fetchMock).toHaveBeenCalledWith(
+    expect.stringContaining("/api/admin/users?"),
+    expect.objectContaining({ credentials: "include" }),
+  );
+});
+
 test("sidebar menu expands a hovered tree and keeps the last selected menu tree open", async () => {
   const user = userEvent.setup();
   vi.stubGlobal(
@@ -725,6 +785,7 @@ test("sidebar menu expands a hovered tree and keeps the last selected menu tree 
     vi.fn(() => jsonResponse(healthResponse)),
   );
 
+  window.history.pushState({}, "", "/setup");
   const { unmount } = render(<App />);
   await screen.findByText("STATUS UP");
 
