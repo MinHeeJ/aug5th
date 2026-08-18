@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/common_admin}
+    username: ${SPRING_DATASOURCE_USERNAME:common_admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:common_admin_password}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+server:
+  port: 8080

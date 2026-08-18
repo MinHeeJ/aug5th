@@ -1,0 +1,62 @@
+services:
+  database:
+    image: postgres:16.4-alpine
+    pull_policy: if_not_present
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-common_admin}
+      POSTGRES_USER: ${POSTGRES_USER:-common_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-common_admin_password}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    image: common-admin-backend:0.1.0
+    build:
+      context: ../backend
+    pull_policy: build
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/${POSTGRES_DB:-common_admin}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-common_admin}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-common_admin_password}
+      SPRING_PROFILES_ACTIVE: docker
+      CMS_AUTH_ADAPTER: internal
+      CMS_PERSONNEL_ADAPTER: mock-snapshot
+      CMS_EXTERNAL_KORUS_ENABLED: "false"
+      CMS_EXTERNAL_SSO_ENABLED: "false"
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/api/health >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  frontend:
+    image: common-admin-frontend:0.1.0
+    build:
+      context: ../frontend
+    pull_policy: build
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/healthz >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  postgres-data:
